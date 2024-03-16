@@ -1,7 +1,7 @@
 Realtime generace fraktálního stromu.
 Po spuštěné zmáčkněte `O` pro načtení základní konfigurace.
-Nejjednodušší je prostě vyzkoušet, co jednotlivé klávesy dělají.
-Export pro windows jsem netestoval, ale měl by fungovat.
+Nejjednodušší mi přijde prostě vyzkoušet, co jednotlivé klávesy dělají.
+Export pro Windows jsem netestoval, ale měl by fungovat.
 
 P.S.
 Ze třech stromů lze sestavit (limitně) přesnou Kochovu vločku.
@@ -9,6 +9,9 @@ Můžete na odpovídající konfigraci zkusit přijít sama nebo do
 `config.json` vložit konfiguraci z `koch.json`.
 
 ### Ovládání
+Dvojice kláves vždy snižují/zvyšují jednu hodnotu.
+klávesy jsou kalibrovány na anglickou klávesnici.
+
 `U` + `L` -> úhel větví
 `K` + `J` -> faktor zmenšení další iterace 
 `,` + `.` -> poměr délky hlavní a 2 vedlejších větví
