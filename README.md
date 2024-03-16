@@ -10,7 +10,7 @@ Můžete na odpovídající konfigraci zkusit přijít sama nebo do
 
 ### Ovládání
 Dvojice kláves vždy snižují/zvyšují jednu hodnotu.
-klávesy jsou kalibrovány na anglickou klávesnici.
+Klávesy jsou kalibrovány na anglickou klávesnici.
 
 `U` + `L` -> úhel větví
 `K` + `J` -> faktor zmenšení další iterace 
