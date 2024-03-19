@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"os"
 
@@ -16,7 +15,7 @@ type Turtle struct {
 }
 
 func (t *Turtle) branch(length float64, depth int) {
-  if depth > state.TREE_DEPTH { fmt.Printf(`{"X": %d,"Y": %d},`, t.X, t.Y); return }
+  if depth > state.TREE_DEPTH { return }
   dir := 1.0
   if depth % 2 == 1 { dir = -1.0 }
   t.forward(state.MAIN_LEN*length, depth)
@@ -57,7 +56,6 @@ func main() {
   ray.ToggleFullscreen()
   defer ray.CloseWindow()
   ray.SetTargetFPS(120)
-  once := false
   for !ray.WindowShouldClose() {
     if ray.IsKeyPressed(ray.KeyEscape) { break }
     if ray.IsKeyDown(ray.KeyH) { state.BRANCH_ANGLE += .02 }
@@ -83,7 +81,6 @@ func main() {
       if err != nil { panic(err) }
       err = json.Unmarshal(data, &state)
       if err != nil { panic(err) }
-      once = true
     }
     if ray.IsKeyPressed(ray.KeyP) {
       data, err := json.Marshal(state)
@@ -98,7 +95,7 @@ func main() {
     for i := range state.COUNT {
       turtle := Turtle{
         X: state.XOFFSET, Y: state.YOFFSET,
-        angle: 2*math.Pi/float64(state.COUNT)*float64(i)+math.Pi/6,
+        angle: 2*math.Pi/float64(state.COUNT)*float64(i),
       }
       turtle.back(-state.LEN_OFFSET)
       turtles = append(turtles, turtle)
@@ -108,7 +105,6 @@ func main() {
     for _, t := range turtles {
       t.branch(1, 0)
     }
-    if once {panic("done")}
     ray.EndDrawing()
   }
 }
