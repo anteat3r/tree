@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"os"
 
@@ -15,17 +16,19 @@ type Turtle struct {
 }
 
 func (t *Turtle) branch(length float64, depth int) {
-  if depth > state.TREE_DEPTH { return }
+  if depth > state.TREE_DEPTH { fmt.Printf(`{"X": %d,"Y": %d},`, t.X, t.Y); return }
+  dir := 1.0
+  if depth % 2 == 1 { dir = -1.0 }
   t.forward(state.MAIN_LEN*length, depth)
-  t.angle += state.BRANCH_ANGLE
+  t.angle += state.BRANCH_ANGLE * dir
   t.forward(state.BRANCH_LEN_FACTOR*state.MAIN_LEN*length, depth)
   t.branch(state.LEN_FACTOR*length, depth+1)
   t.back(state.BRANCH_LEN_FACTOR*state.MAIN_LEN*length)
-  t.angle -= 2*state.BRANCH_ANGLE
+  t.angle -= 2*state.BRANCH_ANGLE * dir
   t.forward(state.BRANCH_LEN_FACTOR*state.MAIN_LEN*length, depth)
   t.branch(state.LEN_FACTOR*length, depth+1)
   t.back(state.BRANCH_LEN_FACTOR*state.MAIN_LEN*length)
-  t.angle += state.BRANCH_ANGLE
+  t.angle += state.BRANCH_ANGLE * dir
   t.back(state.MAIN_LEN*length)
 }
 
@@ -43,16 +46,18 @@ func (t *Turtle) forward(length float64, depth int) {
     t.X, t.Y,
     nextX, nextY,
     clr,
+    // ray.White,
   )
   t.X, t.Y = nextX, nextY
 }
 
 func main() {
   ray.SetTraceLogLevel(ray.LogError)
-  ray.InitWindow(1920, 1440, "Tree")
+  ray.InitWindow(2560, 1440, "Tree")
   ray.ToggleFullscreen()
   defer ray.CloseWindow()
   ray.SetTargetFPS(120)
+  once := false
   for !ray.WindowShouldClose() {
     if ray.IsKeyPressed(ray.KeyEscape) { break }
     if ray.IsKeyDown(ray.KeyH) { state.BRANCH_ANGLE += .02 }
@@ -78,6 +83,7 @@ func main() {
       if err != nil { panic(err) }
       err = json.Unmarshal(data, &state)
       if err != nil { panic(err) }
+      once = true
     }
     if ray.IsKeyPressed(ray.KeyP) {
       data, err := json.Marshal(state)
@@ -85,11 +91,14 @@ func main() {
       err = os.WriteFile("config.json", data, 0644)
       if err != nil { panic(err) }
     }
+    if ray.IsKeyPressed(ray.KeyS) {
+      ray.TakeScreenshot("screen.png")
+    }
     turtles := []Turtle{}
     for i := range state.COUNT {
       turtle := Turtle{
         X: state.XOFFSET, Y: state.YOFFSET,
-        angle: 2*math.Pi/float64(state.COUNT)*float64(i),
+        angle: 2*math.Pi/float64(state.COUNT)*float64(i)+math.Pi/6,
       }
       turtle.back(-state.LEN_OFFSET)
       turtles = append(turtles, turtle)
@@ -99,6 +108,7 @@ func main() {
     for _, t := range turtles {
       t.branch(1, 0)
     }
+    if once {panic("done")}
     ray.EndDrawing()
   }
 }
